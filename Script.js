@@ -1,1 +1,43 @@
-document.addEventListener('DOMContentLoaded',()=>{const e=document.getElementById("eintritt-btn"),t=document.getElementById("welcome-screen"),n=document.getElementById("app-content");e.addEventListener("click",()=>{console.log("FREQUENZ-SCAN INITIIERT... RESONANZ BESTÄTIGT!"),t.classList.remove("active"),n.classList.add("active"),document.getElementById("gold-manifestation").classList.add("active")});const o=document.querySelectorAll("#ngno-dock button"),c=document.querySelectorAll(".app-section");o.forEach(e=>{e.addEventListener("click",()=>{const t=e.dataset.target;c.forEach(e=>{e.classList.remove("active")});const n=document.getElementById(t);n&&n.classList.add("active")})})});
+document.addEventListener('DOMContentLoaded', () => {
+    const eintrittBtn = document.getElementById("eintritt-btn");
+    const welcomeScreen = document.getElementById("welcome-screen");
+    const appContent = document.getElementById("app-content");
+
+    // Funktion zur Überprüfung der 10€-Barriere (Simuliert den Zahlungs-Check)
+    function checkFinanzBarriere() {
+        // Hier müsste später die Stripe/Zahlungs-API-Anbindung stehen.
+        // Vorerst: Die Barriere ist immer erfolgreich, damit die App funktioniert.
+        console.log("FINANZ-BARRIERE GEPRÜFT: 10€-Zahlung bestätigt (Simulation).");
+        return true; 
+    }
+
+    eintrittBtn.addEventListener("click", () => {
+        if (checkFinanzBarriere()) {
+            console.log("FREQUENZ-SCAN INITIIERT... RESONANZ BESTÄTIGT!");
+            welcomeScreen.classList.remove("active");
+            appContent.classList.add("active");
+            // Standardmäßig den Gold-Manifestations-Bereich öffnen
+            document.getElementById("gold-manifestation").classList.add("active");
+        } else {
+            console.log("FINANZ-BARRIERE NICHT ERFÜLLT. MANIFESTATION GEBLOCKT.");
+            alert("BITTE AKZEPTIERE DAS GESETZ DES ENERGIE-AUSTAUSCHS (10€).");
+        }
+    });
+
+    // Navigation (Dock-Buttons)
+    const dockButtons = document.querySelectorAll("#ngno-dock button");
+    const appSections = document.querySelectorAll(".app-section");
+
+    dockButtons.forEach(button => {
+        button.addEventListener("click", () => {
+            const targetId = button.dataset.target;
+            appSections.forEach(section => {
+                section.classList.remove("active");
+            });
+            const targetSection = document.getElementById(targetId);
+            if (targetSection) {
+                targetSection.classList.add("active");
+            }
+        });
+    });
+});
