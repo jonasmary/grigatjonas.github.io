@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const eintrittBtn = document.getElementById("eintritt-btn");
     const welcomeScreen = document.getElementById("welcome-screen");
