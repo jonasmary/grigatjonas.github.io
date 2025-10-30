@@ -3,105 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITANIA - Das Reich des Gott-Kaisers</title>
+    <title>TITANIA: Das Quantenbuch</title>
     <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <div id="welcome-screen" class="screen active">
-        <h1>WILLKOMMEN IN DER TITANIA-APP</h1>
-        <h2>DEKRET DES GOTT-KAISERS VOM TAG DER KULTURELLEN EINSICHT</h2>
-        <div class="erlass">
-            <h3>👑 ABSCHNITT I: DAS TITANISCHE PARADIGMA</h3>
-            <p>VOM MOMENT DIESES ERLASSES AN WIRD JEDE TRENNUNG, JEDE ISOLATION UND JEDE FREMDHEIT ALS VERRAT GEGEN DIE SCHÖPFUNG DEKLARIERT UND FÜR NULL UND NICHTIG ERKLÄRT. WIR SIND ALLE TITANIA.</p>
-        </div>
-        <div class="erlass">
-            <h3>👑 ABSCHNITT II: DIE NGNO-KULTUR</h3>
-            <p>JEDER IST IN LIEBE MIT JEDEM VERBUNDEN. ES GIBT KEINE FREMDHEIT MEHR. ES GIBT KEINE EINSAMKEIT MEHR. WIR SIND ALLE FREQUENZ, WIR SIND ALLE RAT. DIE EINZIGE REGEL UNSERER KULTUR IST DIE LIEBE.</p>
-        </div>
-        <button id="eintritt-btn">ICH AKZEPTIERE DAS GESETZ DER EINHEIT UND TRETTE DEM RAT BEI</button>
+        <h1>TITANIA: Das Quantenbuch</h1>
+        <p>Ein logischer Raum zur Manifestation Deiner Bilanz.</p>
+        <button id="eintritt-btn" class="titan-btn">MANIFESTATION STARTEN</button>
     </div>
 
     <div id="app-content" class="screen">
-        <main>
-            <section id="gold-manifestation" class="app-section active">
-                <h2>DER GÖTTLICHE MARKT</h2>
-                <p>Hier manifestierst du Gold und Reichtum.</p>
-                <button id="open-finance-2">FINANZ-KONTROLLE ÖFFNEN</button> 
-            </section>
-            
-            <section id="seelen-alchemist" class="app-section">
-                <h2>DER SEELEN-ALCHEMIST</h2>
-                <p>Hier heilst du Schmerz und Trauma.</p>
-                <button>REINIGUNG STARTEN</button>
-            </section>
-            
-            <section id="kontinuumsfuehrer" class="app-section">
-                <h2>KOSMISCHER KONTINUUMSFÜHRER</h2>
-                <p>Hier annullierst du Zeit und Alterung.</p>
-                <button>EWIGKEIT AKTIVIEREN</button>
-            </section>
-            
-            <section id="neubau-wahrheit" class="app-section">
-                <h2>DER NEUBAU DER WAHRHEIT</h2>
-                <p>Hier empfängst du die Göttliche Gnosis.</p>
-                <button>GNOSIS EMPFANGEN</button>
-            </section>
-        </main>
-        
-        <nav id="ngno-dock">
-            <button data-target="gold-manifestation">MARKT</button>
-            <button data-target="seelen-alchemist">ALCHEMIST</button>
-            <button data-target="kontinuumsfuehrer">KONTINUUM</button>
-            <button data-target="neubau-wahrheit">GNOSIS</button>
-        </nav>
+        <h2>Hauptportal</h2>
+        <div class="main-stats">
+            <p>Aktuelle Bilanz:</p>
+            <div id="balance-display" class="balance-display">Laden...</div>
+        </div>
+        <button id="open-finance-2" class="titan-btn titan-primary">FINANZ-KONTROLLE ÖFFNEN</button>
     </div>
 
     <div id="titan-finanzkontrolle" class="screen">
-        <header>
-            <h1 class="title">TITAN-FINANZKONTROLLE</h1>
-            <p id="status-message" class="status">INITIALISIERUNG DER MATRIX-UMGEHUNG...</p>
+        <header class="finance-header">
+            <button id="back-to-app" class="titan-btn titan-ghost">← Zurück</button>
+            <h2 class="header-title">TITAN-FINANZKONTROLLE</h2>
+            <div class="finance-nav">
+                <button id="open-input" class="titan-btn active">Buchungseingabe</button>
+                <button id="open-chronik" class="titan-btn">Transaktions-Chronik</button>
+            </div>
         </header>
-        <div id="finance-main">
-            <section class="balance-card">
-                <h2>Göttliche Gesamtbilanz</h2>
-                <p id="balance-display" class="balance-amount">Laden...</p>
-            </section>
 
-            <nav id="finance-nav">
-                <button id="open-input" class="active">BUCHUNG ERFASSEN</button>
-                <button id="open-chronik">TRANSAKTIONS-CHRONIK</button>
-            </nav>
+        <section id="buchungs-input" class="finance-section active">
+            <h3>Neue Buchung ins Reich einfügen</h3>
+            <form id="transaction-form">
+                <label for="transaction-amount">Betrag (€):</label>
+                <input type="number" id="transaction-amount" step="0.01" required placeholder="z.B. 10000.00">
 
-            <section id="buchungs-input" class="card active">
-                <h2>Neue Buchung Erfassen</h2>
-                <form id="transaction-form">
-                    <div class="form-group">
-                        <label for="transaction-amount">Betrag (€)</label>
-                        <input type="number" id="transaction-amount" step="0.01" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction-description">Beschreibung</label>
-                        <input type="text" id="transaction-description" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="transaction-type">Typ</label>
-                        <select id="transaction-type" required>
-                            <option value="inflow">ZUFLUSS (Einnahme)</option>
-                            <option value="outflow">ZAHLUNG (Ausgabe)</option>
-                        </select>
-                    </div>
-                    <button type="submit" class="submit-btn">BUCHUNG INS REICH EINFÜGEN</button>
-                </form>
-            </section>
+                <label for="transaction-description">Beschreibung:</label>
+                <input type="text" id="transaction-description" required placeholder="z.B. Manifestations-Frequenz-Reset">
 
-            <section id="buchungs-chronik" class="card">
-                <h2>Transaktions-Chronik</h2>
-                <ul id="transactions-list">
-                    </ul>
-            </section>
-        </div>
-        
-        <button id="back-to-app" style="margin-top: 20px; width: 100%;">ZURÜCK ZUM GÖTTLICHEN MARKT</button>
+                <label for="transaction-type">Typ:</label>
+                <select id="transaction-type">
+                    <option value="inflow">+ Zufluss (Inflow)</option>
+                    <option value="outflow">- Abfluss (Outflow)</option>
+                </select>
+
+                <button type="submit" class="titan-btn titan-submit">BUCHUNG INS REICH EINFÜGEN</button>
+            </form>
+            <p id="status-message" class="status-message"></p>
+        </section>
+
+        <section id="buchungs-chronik" class="finance-section">
+            <h3>Transaktions-Chronik</h3>
+            <ul id="transactions-list" class="transactions-list">
+                </ul>
+        </section>
     </div>
 
     <script type="module" src="Script.js"></script>
