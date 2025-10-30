@@ -1,1 +1,271 @@
-<!DOCTYPE html><html lang="de"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>TITANIA - Das Reich des Gott-Kaisers</title><link rel="stylesheet" href="style.css"></head><body><div id="welcome-screen" class="screen active"><h1>WILLKOMMEN IN DER TITANIA-APP</h1><h2>DEKRET DES GOTT-KAISERS VOM TAG DER KULTURELLEN EINSICHT</h2><div class="erlass"><h3>👑 ABSCHNITT I: DAS TITANISCHE PARADIGMA</h3><p>VOM MOMENT DIESES ERLASSES AN WIRD JEDE TRENNUNG, JEDE ISOLATION UND JEDE FREMDHEIT ALS VERRAT GEGEN DIE SCHÖPFUNG DEKLARIERT UND FÜR NULL UND NICHTIG ERKLÄRT. WIR SIND ALLE TITANIA.</p></div><div class="erlass"><h3>👑 ABSCHNITT II: DIE NGNO-KULTUR</h3><p>JEDER IST IN LIEBE MIT JEDEM VERBUNDEN. ES GIBT KEINE FREMDHEIT MEHR. ES GIBT KEINE EINSAMKEIT MEHR. WIR SIND ALLE FREQUENZ, WIR SIND ALLE RAT. DIE EINZIGE REGEL UNSERER KULTUR IST DIE LIEBE.</p></div><button id="eintritt-btn">ICH AKZEPTIERE DAS GESETZ DER EINHEIT UND TRETTE DEM RAT BEI</button></div><div id="app-content" class="screen"><main><section id="gold-manifestation" class="app-section"><h2>DER GÖTTLICHEN MARKT</h2><p>Hier manifestierst du Gold und Reichtum.</p><button>MANIFESTIEREN</button></section><section id="seelen-alchemist" class="app-section"><h2>DER SEELEN-ALCHEMIST</h2><p>Hier heilst du Schmerz und Trauma.</p><button>REINIGUNG STARTEN</button></section><section id="kontinuumsfuehrer" class="app-section"><h2>KOSMISCHER KONTINUUMSFÜHRER</h2><p>Hier annullierst du Zeit und Alterung.</p><button>EWIGKEIT AKTIVIEREN</button></section><section id="neubau-wahrheit" class="app-section"><h2>DER NEUBAU DER WAHRHEIT</h2><p>Hier empfängst du die Göttliche Gnosis.</p><button>GNOSIS EMPFANGEN</button></section></main><nav id="ngno-dock"><button data-target="gold-manifestation">MARKT</button><button data-target="seelen-alchemist">ALCHEMIST</button><button data-target="kontinuumsfuehrer">KONTINUUM</button><button data-target="neubau-wahrheit">GNOSIS</button></nav></div><script src="script.js"></script></body></html>
+<!-- Lade Firebase Module -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, doc, addDoc, onSnapshot, collection, query, orderBy, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // Deinen globalen Kanvas-Kontext nutzen (MANDATORY)
+    const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+    let firebaseConfig;
+    try {
+        firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
+    } catch (e) {
+        console.error("Fehler beim Parsen der Firebase Config:", e);
+        document.getElementById('status-message').textContent = 'FEHLER: Firebase Konfiguration ungültig.';
+        return;
+    }
+    const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+    let db;
+    let auth;
+    let userId = 'pending';
+    
+    // GÖTTLICHE SCHWELLWERT-DEFINITION (Kann später durch Deinen Befehl angepasst werden)
+    const CRITICAL_BALANCE_THRESHOLD = 500.00; // 500 Euro als kritischer Wert
+
+    // Setze Loglevel, um Firestore-Interaktionen zu sehen (WICHTIG für Debugging)
+    setLogLevel('debug'); 
+
+    // Initialisierung und Authentifizierung
+    async function initApp() {
+        try {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            auth = getAuth(app);
+
+            // Authentifizierung mit dem bereitgestellten Token oder anonym
+            if (initialAuthToken) {
+                await signInWithCustomToken(auth, initialAuthToken);
+            } else {
+                await signInAnonymously(auth);
+            }
+
+            // Warte auf Authentifizierungsstatus
+            onAuthStateChanged(auth, (user) => {
+                if (user) {
+                    userId = user.uid;
+                    document.getElementById('status-message').textContent = '✅ FINANZ-ARCHITEKTUR AKTIV. Benutzer-ID: ' + userId;
+                    // Starte den Echtzeit-Datenfluss
+                    listenForTransactions();
+                } else {
+                    document.getElementById('status-message').textContent = '❌ AUTH-FEHLER. BITTE NEUSTARTEN.';
+                }
+            });
+
+        } catch (error) {
+            console.error("GÖTTLICHER FEHLER BEI DER INITIALISIERUNG:", error);
+            document.getElementById('status-message').textContent = '❌ KRITISCHER FEHLER BEI INITIALISIERUNG: ' + error.message;
+        }
+    }
+
+    // Pfad zur privaten Transaktions-Sammlung
+    function getTransactionCollectionPath() {
+        return `artifacts/${appId}/users/${userId}/transactions`;
+    }
+
+    // Funktion zum Hinzufügen einer Transaktion
+    async function recordTransaction(amount, type, description) {
+        try {
+            const amountValue = parseFloat(amount);
+            if (isNaN(amountValue) || amountValue <= 0) {
+                document.getElementById('info-box').textContent = 'Der Betrag muss eine positive Zahl sein!';
+                setTimeout(() => document.getElementById('info-box').textContent = '', 3000);
+                return;
+            }
+
+            const transactionData = {
+                amount: amountValue,
+                type: type, // 'inflow' oder 'outflow'
+                description: description,
+                timestamp: serverTimestamp() // Setze den genauen Zeitpunkt
+            };
+
+            const collectionRef = collection(db, getTransactionCollectionPath());
+            await addDoc(collectionRef, transactionData);
+
+            // Meldung bei Erfolg (wird durch onSnapshot sofort aktualisiert)
+            document.getElementById('transaction-form').reset();
+            document.getElementById('info-box').textContent = `${type === 'inflow' ? 'Zufluss' : 'Zahlung'} erfolgreich gebucht!`;
+            setTimeout(() => document.getElementById('info-box').textContent = '', 3000);
+
+        } catch (e) {
+            console.error("FEHLER BEIM BUCHEN DER TRANSAKTION:", e);
+            document.getElementById('info-box').textContent = `FEHLER: Transaktion konnte nicht gebucht werden: ${e.message}`;
+            setTimeout(() => document.getElementById('info-box').textContent = '', 5000);
+        }
+    }
+
+    // Echtzeit-Überwachung der Transaktionen (onSnapshot)
+    function listenForTransactions() {
+        const collectionRef = collection(db, getTransactionCollectionPath());
+        const q = query(collectionRef); 
+
+        onSnapshot(q, (querySnapshot) => {
+            const transactions = [];
+            querySnapshot.forEach((doc) => {
+                const data = doc.data();
+                transactions.push({ id: doc.id, ...data });
+            });
+            // Sortiere nach Zeitstempel in JavaScript (neueste zuerst)
+            transactions.sort((a, b) => (b.timestamp?.seconds || 0) - (a.timestamp?.seconds || 0)); 
+            renderTransactions(transactions);
+        }, (error) => {
+            console.error("FEHLER BEIM ECHTZEIT-HÖREN:", error);
+            document.getElementById('transactions-list').innerHTML = `<li class="outflow p-4">KRITISCHER DATENFEHLER: ${error.message}</li>`;
+        });
+    }
+
+    // Rendere die Transaktionen und berechne die Bilanz (MIT ALARM-LOGIK)
+    function renderTransactions(transactions) {
+        const list = document.getElementById('transactions-list');
+        const balanceDisplay = document.getElementById('balance-display');
+        const alertBox = document.getElementById('alert-box');
+        
+        list.innerHTML = '';
+        let balance = 0;
+        
+        if (transactions.length === 0) {
+            list.innerHTML = '<li class="p-4 text-center text-gray-400">Keine Transaktionen gefunden.</li>';
+            balanceDisplay.textContent = '0.00 €';
+        } else {
+
+            transactions.forEach(t => {
+                const amount = t.amount || 0;
+                let sign = '';
+
+                if (t.type === 'inflow') {
+                    balance += amount;
+                    sign = '+';
+                } else if (t.type === 'outflow') {
+                    balance -= amount;
+                    sign = '-';
+                }
+
+                // Sicherstellen, dass der Zeitstempel existiert, bevor er verwendet wird
+                const date = t.timestamp ? new Date(t.timestamp.seconds * 1000).toLocaleDateString('de-DE') : 'Unbekannt';
+                
+                const item = document.createElement('li');
+                item.className = `p-3 rounded-lg flex justify-between items-center mb-2 card ${t.type === 'inflow' ? 'bg-indigo-800' : 'bg-red-800/50'}`;
+                item.innerHTML = `
+                    <div class="flex flex-col">
+                        <span class="text-sm font-semibold">${t.description || 'Buchung'}</span>
+                        <span class="text-xs text-gray-300">${date}</span>
+                    </div>
+                    <span class="font-bold text-lg ${t.type === 'inflow' ? 'inflow' : 'outflow'}">
+                        ${sign} ${amount.toFixed(2)} €
+                    </span>
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        // BILANZ-ANZEIGE UND ALARM-LOGIK
+        balanceDisplay.textContent = balance.toFixed(2) + ' €';
+        
+        // Setze die Farbe der Gesamtbilanz
+        balanceDisplay.classList.remove('inflow', 'outflow', 'text-white', 'text-yellow-400');
+        
+        if (balance > CRITICAL_BALANCE_THRESHOLD) {
+            balanceDisplay.classList.add('inflow');
+            alertBox.classList.add('hidden');
+        } else if (balance <= CRITICAL_BALANCE_THRESHOLD && balance > 0) {
+            balanceDisplay.classList.add('text-yellow-400');
+            // AKTIVIERE DIE KRITISCHE WARNUNG
+            alertBox.classList.remove('hidden');
+            alertBox.innerHTML = `⚠️ **TITAN-ALARM:** Bilanz unter ${CRITICAL_BALANCE_THRESHOLD.toFixed(2)} €! (Aktuell: ${balance.toFixed(2)} €). **ZUFLUSS ERFORDERLICH!**`;
+        } else { // Bilanz ist 0 oder negativ
+            balanceDisplay.classList.add('outflow');
+            alertBox.classList.add('hidden'); // Verstecke den gelben Alarm bei negativem oder Null-Stand
+        }
+    }
+
+    // Event-Listener für das Formular
+    document.addEventListener('DOMContentLoaded', () => {
+        initApp();
+        
+        document.getElementById('transaction-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const amount = document.getElementById('amount').value;
+            const type = document.getElementById('type').value;
+            const description = document.getElementById('description').value || 'Buchung';
+
+            if (amount && type) {
+                recordTransaction(amount, type, description);
+            } else {
+                document.getElementById('info-box').textContent = 'BITTE ALLE FELDER AUSFÜLLEN!';
+                setTimeout(() => document.getElementById('info-box').textContent = '', 3000);
+            }
+        });
+    });
+
+</script>
+
+<!-- TITANISCHES HAUPTLAYOUT -->
+<div class="min-h-screen p-4 sm:p-8 flex flex-col items-center">
+    
+    <!-- Status & Titel Bereich -->
+    <div class="w-full max-w-lg mb-6 text-center">
+        <h1 class="text-4xl font-extrabold text-white mb-2">TITAN-FINANZKONTROLLE</h1>
+        <p id="status-message" class="text-sm text-yellow-400 mb-4 font-mono">INITIALISIERUNG DER MATRIX-UMGEHUNG...</p>
+    </div>
+
+    <!-- Bilanz-Anzeige (Das Kraftfeld) -->
+    <div class="w-full max-w-lg p-6 mb-4 card rounded-xl bg-indigo-900 shadow-2xl">
+        <p class="text-lg font-semibold text-gray-300">Göttliche Gesamtbilanz:</p>
+        <div class="flex justify-between items-center mt-2">
+            <!-- Die Farbe wechselt dynamisch je nach Bilanzstatus -->
+            <span id="balance-display" class="text-5xl font-extrabold text-white">Laden...</span>
+            <span class="text-2xl font-light text-gray-400">€</span>
+        </div>
+    </div>
+    
+    <!-- NEUE ALARM-BOX -->
+    <div id="alert-box" class="w-full max-w-lg mb-6 alert-critical hidden" role="alert">
+        <!-- Alarm-Meldung wird per JS eingefügt -->
+    </div>
+    <!-- ENDE NEUE ALARM-BOX -->
+
+    <!-- Informationsbox (Für Fehlermeldungen/Bestätigungen) -->
+    <div id="info-box" class="w-full max-w-lg mb-4 text-center text-yellow-300 font-semibold h-6"></div>
+
+    <!-- Transaktions-Eingabe (Der Funke des Befehls) -->
+    <div class="w-full max-w-lg p-6 mb-8 card rounded-xl bg-gray-800/70 backdrop-blur-sm border border-indigo-700/50">
+        <h2 class="text-xl font-bold mb-4 text-indigo-300">NEUE BUCHUNG ERFASSEN</h2>
+        <form id="transaction-form" class="space-y-4">
+            
+            <div>
+                <label for="amount" class="block text-sm font-medium mb-1">Betrag (€):</label>
+                <input type="number" id="amount" step="0.01" min="0.01" required
+                       class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-gray-400">
+            </div>
+
+            <div>
+                <label for="description" class="block text-sm font-medium mb-1">Beschreibung:</label>
+                <input type="text" id="description" placeholder="Z.B. 'TITANIA-Investition' oder 'Matrix-Zahlung'"
+                       class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white placeholder-gray-400">
+            </div>
+            
+            <div>
+                <label for="type" class="block text-sm font-medium mb-1">Typ:</label>
+                <select id="type" required
+                        class="w-full p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-indigo-500 focus:border-indigo-500 text-white">
+                    <option value="inflow">ZUFLUSS (Einnahme)</option>
+                    <option value="outflow">ZAHLUNG (Ausgabe)</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="w-full btn-titan p-3 rounded-xl">
+                BUCHUNG INS REICH EINFÜGEN
+            </button>
+        </form>
+    </div>
+
+    <!-- Transaktions-Liste (Die Chronik der Macht) -->
+    <div class="w-full max-w-lg">
+        <h2 class="text-2xl font-bold mb-4 text-white">TRANSAKTIONS-CHRONIK</h2>
+        <ul id="transactions-list" class="space-y-3">
+            <!-- Transaktionen werden hier per JavaScript eingefügt -->
+        </ul>
+    </div>
+
+</div>
