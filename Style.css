@@ -7,209 +7,123 @@ body {
     padding: 0;
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Oben beginnen, damit bei mehr Inhalt gescrollt werden kann */
+    align-items: flex-start;
     min-height: 100vh;
 }
 
-/* Hauptstruktur der Bildschirme */
-.screen {
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    box-sizing: border-box;
-    background: #16213e; /* Dunkelblau für Content-Box */
-    box-shadow: 0 0 30px rgba(233, 69, 96, 0.5);
-    border-radius: 15px;
-    margin-top: 50px;
-    display: none; /* Alle standardmäßig verstecken */
-}
-
-.screen.active {
-    display: block; /* Nur der aktive Bildschirm wird angezeigt */
-}
-
-/* Willkommensbildschirm */
-#welcome-screen {
-    text-align: center;
-    padding: 100px 20px;
-}
-#welcome-screen h1 {
-    font-size: 2.5em;
-    color: #0f3460;
-    margin-bottom: 20px;
-}
-
-/* Buttons */
-.titan-btn {
-    background-color: #e94560; /* Rot-Pink */
+/* Hauptstruktur des Headers und des Körpers */
+#header {
+    background-color: #0f3460; /* Dunkelblau für den Header */
     color: #fff;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1em;
-    font-weight: 700;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s, transform 0.1s;
-    margin-top: 15px;
-    display: block;
-    width: 100%;
-    text-align: center;
-}
-
-.titan-btn:hover {
-    background-color: #ff6a80;
-    transform: translateY(-2px);
-}
-
-.titan-primary {
-    margin-top: 30px;
-    background-color: #0f3460;
-    border: 2px solid #e94560;
-}
-.titan-primary:hover {
-    background-color: #1a4f8a;
-}
-
-.titan-ghost {
-    background: none;
-    color: #e94560;
-    border: 1px solid #e94560;
-    width: auto;
-    display: inline-block;
-    padding: 8px 15px;
-    margin-top: 0;
-}
-
-.titan-submit {
-    margin-top: 25px;
-    background-color: #533483;
-}
-.titan-submit:hover {
-    background-color: #6a4a9c;
-}
-
-/* Balance Anzeige */
-.main-stats {
-    text-align: center;
-    margin: 30px 0;
-}
-.balance-display {
-    font-size: 3em;
-    font-weight: 700;
-    color: #e94560;
-    margin-top: 10px;
-    padding: 10px;
-    background: #0f3460;
-    border-radius: 8px;
-}
-
-/* Finanzkontrolle Header/Nav */
-.finance-header {
+    padding: 10px 20px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid #3e445b;
+    width: 100%;
+    box-sizing: border-box;
 }
 
-.header-title {
-    color: #e94560;
+#app-title {
+    font-size: 1.2em;
     margin: 0;
     flex-grow: 1;
     text-align: center;
-    padding: 10px 0;
 }
 
-.finance-nav {
-    display: flex;
-    width: 100%;
-    justify-content: space-around;
-    margin-top: 15px;
-}
-
-.finance-nav .titan-btn {
-    width: 48%;
-    background-color: #3e445b;
-    color: #90a4ae;
-    transition: background-color 0.3s, color 0.3s;
-    padding: 10px;
-    margin: 0;
-}
-.finance-nav .titan-btn.active {
+.protect-code-button {
     background-color: #e94560;
     color: #fff;
+    border: none;
+    padding: 5px 10px;
+    font-size: 0.8em;
+    border-radius: 5px;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-/* Formular und Sektionen */
-.finance-section {
-    padding: 20px 0;
-    border-top: 1px solid #3e445b;
-    display: none;
-}
-.finance-section.active {
-    display: block;
-}
-
-#transaction-form label {
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: #90a4ae;
+.message-box {
+    background: #0f3460;
+    color: #ffc700;
+    padding: 10px;
+    margin: 20px auto;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 580px;
+    text-align: center;
     font-weight: 700;
 }
 
-#transaction-form input[type="number"],
-#transaction-form input[type="text"],
-#transaction-form select {
+/* Modul-Struktur (Räume) */
+.module {
+    background: #16213e;
+    border: 1px solid #3e445b;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto;
+    width: 90%;
+    max-width: 580px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+/* Finanz- und Gnosis-Module */
+.finance-module h2, .gnosis-module h3 {
+    color: #ffc700; /* Goldgelb für Überschriften */
+    border-bottom: 1px solid #3e445b;
+    padding-bottom: 10px;
+}
+
+/* Balance Anzeige */
+#balance-display {
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #4CAF50; /* Grün */
+    margin-top: 10px;
+}
+
+/* Eingabefelder und Buttons */
+input[type="number"], input[type="text"] {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
+    margin: 8px 0;
     border-radius: 5px;
     border: 1px solid #3e445b;
     background-color: #1a1a2e;
     color: #fff;
     box-sizing: border-box;
-    font-size: 1em;
 }
 
-.status-message {
-    text-align: center;
-    margin-top: 20px;
+.titan-btn {
+    background-color: #e94560;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
     font-weight: 700;
-    color: #0f3460; /* Standardmäßig blau */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+.titan-submit {
+    background-color: #533483;
+}
+.titan-btn:hover {
+    background-color: #ff6a80;
 }
 
 /* Transaktionsliste (Chronik) */
-.transactions-list {
+#transactions-list {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
-
-.transactions-list li {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px 15px;
-    border-radius: 8px;
-    margin-bottom: 8px;
-    background-color: #1a1a2e;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+#transactions-list li {
+    padding: 8px 0;
+    border-bottom: 1px solid #3e445b;
+    color: #90a4ae;
 }
-
-.transactions-list li .description {
+#transactions-list li .amount {
     font-weight: 700;
-    color: #fff;
+    float: right;
 }
-
-.transactions-list li .amount {
-    font-weight: 700;
-}
-
-.inflow .amount {
-    color: #4CAF50; /* Grün für Zufluss */
-}
-
-.outflow .amount {
-    color: #e94560; /* Rot für Abfluss */
-}
+.inflow .amount { color: #4CAF50; }
+.outflow .amount { color: #e94560; }
