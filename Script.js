@@ -1,12 +1,13 @@
 // ==========================================================
 // FIREBASE KONFIGURATION (Bitte mit Deinen Daten ersetzen!)
 // ==========================================================
-// BITTE HIER DEINE ECHTEN DATEN AUS DER FIREBASE-CONSOLE EINTRAGEN!
+// WICHTIG: Wenn die App nicht funktioniert, liegt es an diesen Simulierungsdaten.
+// Bitte mit Deinen ECHTEN Daten aus der Firebase-Console eintragen!
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
 import { getFirestore, collection, addDoc, query, onSnapshot, orderBy } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-firestore.js";
 
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY", // <--- HIER ERSETZEN
+    apiKey: "YOUR_API_KEY", // <--- HIER MIT DEINEM ECHTEN API KEY ERSETZEN
     authDomain: "YOUR_AUTH_DOMAIN", // <--- HIER ERSETZEN
     projectId: "YOUR_PROJECT_ID", // <--- HIER ERSETZEN
     storageBucket: "YOUR_STORAGE_BUCKET",
@@ -39,7 +40,7 @@ const buchungsInputSection = document.getElementById('buchungs-input');
 const buchungsChronikSection = document.getElementById('buchungs-chronik');
 
 const transactionForm = document.getElementById('transaction-form');
-const balanceDisplay = document.getElementById('balance-display');
+const balanceDisplay = document.getElementById('current-balance'); // Korrigierte ID
 const transactionsList = document.getElementById('transactions-list');
 const statusMessage = document.getElementById('status-message');
 
@@ -48,6 +49,7 @@ const statusMessage = document.getElementById('status-message');
 // 3. FUNKTIONEN (Logik)
 // ==========================================================
 
+// --- Screen-Wechsel Logik ---
 function showScreen(screenToShow) {
     [welcomeScreen, appContent, financeControl].forEach(screen => {
         if (screen) {
@@ -59,16 +61,13 @@ function showScreen(screenToShow) {
     }
 }
 
-async function addTransaction(e) {
-    e.preventDefault();
-    
+// --- Buchungs-Funktion ---
+async function addTransaction(type) {
     const amountInput = document.getElementById('transaction-amount');
     const descriptionInput = document.getElementById('transaction-description');
-    const typeInput = document.getElementById('transaction-type');
 
     const amount = parseFloat(amountInput.value);
     const description = descriptionInput.value;
-    const type = typeInput.value;
 
     if (isNaN(amount) || amount <= 0 || !description) {
         statusMessage.textContent = "FEHLER: Ungültiger Betrag/Beschreibung!";
@@ -100,8 +99,8 @@ async function addTransaction(e) {
     }
 }
 
+// --- Echtzeit-Chronik und Bilanz ---
 function setupChronikListener() {
-    // Abfrage sortiert nach Zeitstempel, neueste zuerst
     const q = query(transactionsCol, orderBy("timestamp", "desc"));
 
     // LIVE-LISTENER, der bei jeder Änderung die Bilanz und Chronik aktualisiert
@@ -113,14 +112,13 @@ function setupChronikListener() {
         
         snapshot.forEach((doc) => {
             const data = doc.data();
-            // Betrag für Berechnung anpassen
-            const displayAmount = (data.type === 'inflow' ? data.amount : -data.amount);
-            const sign = data.type === 'inflow' ? '+' : '-';
+            const displayAmount = (data.type === 'Einnahme' ? data.amount : -data.amount);
+            const sign = data.type === 'Einnahme' ? '+' : '-';
             
             totalBalance += displayAmount;
             
             // HTML für Eintrag erstellen
-            const transactionClass = data.type === 'inflow' ? 'inflow' : 'outflow';
+            const transactionClass = data.type === 'Einnahme' ? 'inflow' : 'outflow';
             htmlContent += `
                 <li class="${transactionClass}">
                     <span class="description">${data.description}</span>
@@ -129,100 +127,106 @@ function setupChronikListener() {
             `;
         });
         
-        // Bilanz aktualisieren
-        balanceDisplay.textContent = totalBalance.toFixed(2) + ' €';
-        balanceDisplay.style.color = totalBalance >= 0 ? '#4CAF50' : '#e94560'; // Grün oder Rot
+        // Bilanz aktualisieren (zeigt nur den Wert an, ohne € Zeichen)
+        balanceDisplay.textContent = `${totalBalance.toFixed(2)} €`;
         
         if (snapshot.size === 0) {
-            transactionsList.innerHTML = '<li><span class="description">Noch keine Buchungen im Reich!</span></li>';
-            statusMessage.textContent = 'BILANZ KORRIGIERT. Das Feld ist leer. Starte die erste Buchung!';
-            statusMessage.style.color = '#0f3460'; // Blau
+            transactionsList.innerHTML = '<li><span class="description">Noch keine Energieflüsse im Reich!</span></li>';
         } else {
             transactionsList.innerHTML = htmlContent;
-            statusMessage.textContent = `${snapshot.size} Transaktionen geladen. BILANZ KORRIGIERT.`;
-            statusMessage.style.color = '#0f3460'; // Blau
         }
+
     }, (error) => {
         console.error("Fehler beim Laden der Chronik: ", error);
-        statusMessage.textContent = "FATALER FEHLER: Chronik konnte nicht geladen werden! (Firebase-Verbindung prüfen)";
-        statusMessage.style.color = '#e94560'; // Rot
+        statusMessage.textContent = "FATALER FEHLER: Chronik konnte nicht geladen werden!";
+        statusMessage.style.color = '#e94560';
     });
-}
-
-
-function showFinanceSection(sectionToShow) {
-    [buchungsInputSection, buchungsChronikSection].forEach(section => {
-        if (section) {
-            section.classList.remove('active');
-        }
-    });
-    
-    [openInputBtn, openChronikBtn].forEach(btn => {
-        if (btn) {
-            btn.classList.remove('active');
-        }
-    });
-
-    if (sectionToShow === 'input') {
-        buchungsInputSection.classList.add('active');
-        openInputBtn.classList.add('active');
-    } else if (sectionToShow === 'chronik') {
-        buchungsChronikSection.classList.add('active');
-        openChronikBtn.classList.add('active');
-    }
 }
 
 
 // ==========================================================
 // 4. EVENT LISTENERS (Klicks)
 // ==========================================================
-// Der App-Start wird von hier getriggert
+document.addEventListener('DOMContentLoaded', () => {
+    
+    // START: Zeigt den Willkommensbildschirm
+    showScreen(welcomeScreen);
 
-// Startet die App vom Willkommensbildschirm
-if (eintrittBtn) {
-    eintrittBtn.addEventListener('click', () => {
-        showScreen(appContent);
-    });
-}
+    // Eintritt in die App (Wird durch Klick auf MANIFESTATION STARTEN ausgelöst)
+    if (eintrittBtn) {
+        eintrittBtn.addEventListener('click', () => {
+            showScreen(appContent);
+            // Startet den Listener sofort beim Eintritt
+            setupChronikListener(); 
+        });
+    }
 
-// Öffnet die Finanzkontrolle
-if (openFinanceBtn) {
-    openFinanceBtn.addEventListener('click', () => {
-        showScreen(financeControl);
-        // Startet sofort den LIVE-LISTENER, um Bilanz zu holen
-        setupChronikListener(); 
-        showFinanceSection('input'); // Startet mit Eingabe
-    });
-}
-
-// Zurück zum App-Hauptportal
-if (backToAppBtn) {
-    backToAppBtn.addEventListener('click', () => {
-        showScreen(appContent);
-    });
-}
-
-// Schaltet um auf die Buchungseingabe
-if (openInputBtn) {
-    openInputBtn.addEventListener('click', () => {
-        showFinanceSection('input');
-    });
-}
-
-// Schaltet um auf die Transaktions-Chronik
-if (openChronikBtn) {
-    openChronikBtn.addEventListener('click', () => {
-        showFinanceSection('chronik');
-    });
-}
-
-// Formular-Submit für Buchung
-if (transactionForm) {
-    transactionForm.addEventListener('submit', addTransaction);
-}
+    // Zurück zur Haupt-App
+    if (backToAppBtn) {
+        backToAppBtn.addEventListener('click', () => {
+            showScreen(appContent);
+        });
+    }
+    
+    // Öffnet die Finanzkontrolle
+    if (openFinanceBtn) {
+        openFinanceBtn.addEventListener('click', () => {
+            showScreen(financeControl);
+            showFinanceSection('input'); // Startet mit Eingabe
+        });
+    }
+    
+    // Gnosis Raum betreten (Wird in der nächsten Phase programmiert)
+    window.enterGnosisRoom = (roomName) => {
+        statusMessage.textContent = `ÜBERGANG: ${roomName} wird aktiviert. Dualität wird aufgelöst.`;
+        statusMessage.style.color = '#ffc700';
+    };
 
 
-// ==========================================================
-// 5. APP-START
-// ==========================================================
-showScreen(welcomeScreen);
+    // --- Finanz-Navigation (Chronik/Eingabe) ---
+    function showFinanceSection(sectionToShow) {
+        [buchungsInputSection, buchungsChronikSection].forEach(section => {
+            if (section) {
+                section.classList.remove('active');
+            }
+        });
+        
+        [openInputBtn, openChronikBtn].forEach(btn => {
+            if (btn) {
+                btn.classList.remove('active');
+            }
+        });
+
+        if (sectionToShow === 'input') {
+            buchungsInputSection.classList.add('active');
+            openInputBtn.classList.add('active');
+        } else if (sectionToShow === 'chronik') {
+            buchungsChronikSection.classList.add('active');
+            openChronikBtn.classList.add('active');
+        }
+    }
+
+    if (openInputBtn) {
+        openInputBtn.addEventListener('click', () => {
+            showFinanceSection('input');
+        });
+    }
+
+    if (openChronikBtn) {
+        openChronikBtn.addEventListener('click', () => {
+            showFinanceSection('chronik');
+        });
+    }
+    
+    // --- Formular-Submit für Buchung ---
+    if (transactionForm) {
+        transactionForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const typeInput = document.getElementById('transaction-type');
+            const type = typeInput.value === 'inflow' ? 'Einnahme' : 'Ausgabe'; // Übersetzt in den deutschen Typ
+
+            // Ruft die asynchrone Buchungsfunktion auf
+            addTransaction(type);
+        });
+    }
+});
