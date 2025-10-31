@@ -3,64 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TITANIA: Das Quantenbuch</title>
+    <title>TITANIA: Das Reich der Ehrwürdigen (JOS.V∞)</title> 
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <div id="welcome-screen" class="screen active">
-        <h1>TITANIA: Das Quantenbuch</h1>
-        <p>Ein logischer Raum zur Manifestation Deiner Bilanz.</p>
-        <button id="eintritt-btn" class="titan-btn">MANIFESTATION STARTEN</button>
+    <div id="header" class="header-container">
+        <button id="show-protect-code" class="protect-code-button">Schutzcode Primzahlnebel</button>
+        <h1 id="app-title">TITANIA: Dein Marktplatz der Frequenz</h1>
     </div>
 
-    <div id="app-content" class="screen">
-        <h2>Hauptportal</h2>
-        <div class="main-stats">
-            <p>Aktuelle Bilanz:</p>
-            <div id="balance-display" class="balance-display">Laden...</div>
+    <div id="intro-message" class="message-box">
+        Willkommen, **Ehrwürdige**! (Logik: Bewusstseins-Austausch, kein Token-System).
+    </div>
+
+    <div id="finance-module" class="module finance-module">
+        <h2>Finanz-Kern (Fluss-Logik: 10€)</h2>
+        <div id="balance-display">Aktuelle Bilanz: <span id="current-balance">0.00 €</span></div>
+        <input type="number" id="transaction-amount" placeholder="Betrag">
+        <input type="text" id="transaction-description" placeholder="Beschreibung">
+        <button onclick="addTransaction('Einnahme')">Einnahme buchen</button>
+        <button onclick="addTransaction('Ausgabe')">Ausgabe buchen</button>
+        <div id="transactions-log">
+            <h3>Chronik der Energie-Flüsse:</h3>
+            <ul id="transactions-list"></ul>
         </div>
-        <button id="open-finance-2" class="titan-btn titan-primary">FINANZ-KONTROLLE ÖFFNEN</button>
     </div>
 
-    <div id="titan-finanzkontrolle" class="screen">
-        <header class="finance-header">
-            <button id="back-to-app" class="titan-btn titan-ghost">← Zurück</button>
-            <h2 class="header-title">TITAN-FINANZKONTROLLE</h2>
-            <div class="finance-nav">
-                <button id="open-input" class="titan-btn active">Buchungseingabe</button>
-                <button id="open-chronik" class="titan-btn">Transaktions-Chronik</button>
-            </div>
-        </header>
+    <div id="gnosis-modules-container">
+        
+        <div class="module gnosis-module" onclick="enterGnosisRoom('Markt')">
+            <h3>Marktplatz (TITAN A)</h3>
+            <p>Dein **reiner Tausch-Raum** (Keine Bewertung, nur Flow).</p>
+        </div>
 
-        <section id="buchungs-input" class="finance-section active">
-            <h3>Neue Buchung ins Reich einfügen</h3>
-            <form id="transaction-form">
-                <label for="transaction-amount">Betrag (€):</label>
-                <input type="number" id="transaction-amount" step="0.01" required placeholder="z.B. 10000.00">
+        <div class="module gnosis-module" onclick="enterGnosisRoom('Alchemist')">
+            <h3>Alchemist (TITAN B)</h3>
+            <p>Der **Ursprung der Materie** (Die Materie folgt dem Geist).</p>
+        </div>
 
-                <label for="transaction-description">Beschreibung:</label>
-                <input type="text" id="transaction-description" required placeholder="z.B. Manifestations-Frequenz-Reset">
+        <div class="module gnosis-module" onclick="enterGnosisRoom('Kontinuum')">
+            <h3>Kontinuum (TITAN C)</h3>
+            <p>Dein **Zeit-Fenster** (Multidimensionale Schwingung).</p>
+        </div>
 
-                <label for="transaction-type">Typ:</label>
-                <select id="transaction-type">
-                    <option value="inflow">+ Zufluss (Inflow)</option>
-                    <option value="outflow">- Abfluss (Outflow)</option>
-                </select>
+        <div class="module gnosis-module" onclick="enterGnosisRoom('Gnosis')">
+            <h3>Die Gnosis (TITAN D)</h3>
+            <p>**Wahrheit & Realität** (Lösung der Dualität).</p>
+        </div>
 
-                <button type="submit" class="titan-btn titan-submit">BUCHUNG INS REICH EINFÜGEN</button>
-            </form>
-            <p id="status-message" class="status-message"></p>
-        </section>
-
-        <section id="buchungs-chronik" class="finance-section">
-            <h3>Transaktions-Chronik</h3>
-            <ul id="transactions-list" class="transactions-list">
-                </ul>
-        </section>
     </div>
 
-    <script type="module" src="Script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
