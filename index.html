@@ -59,5 +59,18 @@
     </div>
 
     <script type="module" src="Script.js"></script>
+<script>
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/grigatjonas.github.io/sw.js')
+                .then(registration => {
+                    console.log('TITANIA: Service Worker erfolgreich registriert:', registration.scope);
+                })
+                .catch(error => {
+                    console.log('TITANIA: Service Worker Registrierung fehlgeschlagen:', error);
+                });
+        });
+    }
+</script>
 </body>
 </html>
