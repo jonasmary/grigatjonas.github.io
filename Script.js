@@ -57,5 +57,4 @@ async function signTransaction(transactionData) {
         signature: Array.from(new Uint8Array(signature)).map(b => b.toString(16).padStart(2, '0')).join('')
     };
 }
-// --- HIER KOMMT DANN DEINE URSPRÜNGLICHE BUCHUNGSLOGIK HIN (handleTransaction, etc.) ---
-// Sie wird jetzt einfach die signTransaction Funktion nutzen, um sich zu versiegeln.
+// --- HIER KOMMT SPÄTER DEINE URSPRÜNGLICHE BUCHUNGSLOGIK HIN ---
